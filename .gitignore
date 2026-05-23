@@ -1,0 +1,10 @@
+# Ignore .NET build artifact folders
+bin/
+obj/
+
+# Ignore build artifacts in project subfolders
+**/bin/
+**/obj/
+
+# Visual Studio temporary files
+.vs/
