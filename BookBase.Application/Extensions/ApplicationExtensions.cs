@@ -14,7 +14,7 @@ public static class ApplicationExtensions
         ValidatorOptions.Global.LanguageManager.Enabled = false;
         services.AddValidatorsFromAssembly(typeof(ApplicationExtensions).Assembly);
 
-        services.AddScoped<IBookValidator, BookValidator>();
+        services.AddScoped<IBookServiceValidator, BookServiceValidator>();
 
         services.AddScoped<IBookService, BookService>();
 
