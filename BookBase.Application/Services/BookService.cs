@@ -1,7 +1,7 @@
 using BookBase.Application.Mapping.Extensions;
 using BookBase.Domain.Abstractions.Repositories;
 using BookBase.Domain.Abstractions.Services;
-using BookBase.Domain.Abstractions.Validators;
+using BookBase.Domain.Abstractions.Validators.Services;
 using BookBase.Domain.Models.Commands.Books;
 using BookBase.Domain.Models.DTOs;
 using BookBase.Domain.Models.Results;

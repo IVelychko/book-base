@@ -1,19 +1,22 @@
 using BookBase.Application.Extensions;
 using BookBase.Domain.Abstractions.Repositories;
 using BookBase.Domain.Abstractions.Validators;
+using BookBase.Domain.Abstractions.Validators.Services;
 using BookBase.Domain.Exceptions;
 using BookBase.Domain.Models.Commands.Books;
 using BookBase.Domain.Shared;
 
-namespace BookBase.Application.Validation.Books;
+namespace BookBase.Application.Validation.Books.Services;
 
 public class BookServiceValidator(
+    IBookValidator bookValidator,
     IBookRepository bookRepository,
     IAuthorRepository authorRepository,
     IPublisherRepository publisherRepository,
     IBookTypeRepository bookTypeRepository,
     IBookCoverRepository bookCoverRepository) : IBookServiceValidator
 {
+    private readonly IBookValidator _bookValidator = bookValidator;
     private readonly IBookRepository _bookRepository = bookRepository;
     private readonly IAuthorRepository _authorRepository = authorRepository;
     private readonly IPublisherRepository _publisherRepository = publisherRepository;
@@ -23,8 +26,7 @@ public class BookServiceValidator(
     public async Task ValidateAddBookCommandAsync(AddBookCommand command)
     {
         Ensure.ArgumentNotNull(command);
-        AddBookCommandValidator addBookCommandValidator = new();
-        var validationResult = addBookCommandValidator.Validate(command);
+        var validationResult = _bookValidator.ValidateAddBookCommand(command);
         validationResult.ThrowIfValidationFailed();
 
         var validationErrors = new Dictionary<string, string[]>();
@@ -39,8 +41,7 @@ public class BookServiceValidator(
     public async Task ValidateUpdateBookCommandAsync(UpdateBookCommand command)
     {
         Ensure.ArgumentNotNull(command);
-        UpdateBookCommandValidator updateBookCommandValidator = new();
-        var validationResult = updateBookCommandValidator.Validate(command);
+        var validationResult = _bookValidator.ValidateUpdateBookCommand(command);
         validationResult.ThrowIfValidationFailed();
         await CheckBookExistsByIdAsync(Guid.Parse(command.Id));
 
@@ -56,8 +57,7 @@ public class BookServiceValidator(
     public async Task ValidateDeleteBookCommandAsync(DeleteBookCommand command)
     {
         Ensure.ArgumentNotNull(command);
-        DeleteBookCommandValidator deleteBookCommandValidator = new();
-        var validationResult = deleteBookCommandValidator.Validate(command);
+        var validationResult = _bookValidator.ValidateDeleteBookCommand(command);
         validationResult.ThrowIfValidationFailed();
         await CheckBookExistsByIdAsync(Guid.Parse(command.Id));
     }

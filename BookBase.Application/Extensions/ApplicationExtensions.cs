@@ -1,7 +1,9 @@
 using BookBase.Application.Services;
 using BookBase.Application.Validation.Books;
+using BookBase.Application.Validation.Books.Services;
 using BookBase.Domain.Abstractions.Services;
 using BookBase.Domain.Abstractions.Validators;
+using BookBase.Domain.Abstractions.Validators.Services;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,6 +15,8 @@ public static class ApplicationExtensions
     {
         ValidatorOptions.Global.LanguageManager.Enabled = false;
         services.AddValidatorsFromAssembly(typeof(ApplicationExtensions).Assembly);
+
+        services.AddScoped<IBookValidator, BookValidator>();
 
         services.AddScoped<IBookServiceValidator, BookServiceValidator>();
 

@@ -1,6 +1,6 @@
 using BookBase.Domain.Models.Commands.Books;
 
-namespace BookBase.Domain.Abstractions.Validators;
+namespace BookBase.Domain.Abstractions.Validators.Services;
 
 public interface IBookServiceValidator
 {
