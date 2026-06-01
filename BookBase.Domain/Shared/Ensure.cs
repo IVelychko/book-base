@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using BookBase.Domain.Exceptions;
 
 namespace BookBase.Domain.Shared;
@@ -14,6 +15,11 @@ public static class Ensure
         }
     }
 
-    public static T EntityExists<T>(T? entity, string? message = null) =>
-        entity ?? throw new EntityNotFoundException(message);
+    public static void EntityExists<T>([NotNull] T? entity, string? message = null) where T : class
+    {
+        if (entity is null)
+        {
+            throw new EntityNotFoundException(message);
+        }
+    }
 }

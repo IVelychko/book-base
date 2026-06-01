@@ -18,11 +18,11 @@ builder.Services.AddCorsPolicy(corsPolicyName, builder.Configuration);
 builder.Services.AddControllers();
 
 builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddApplication();
+builder.Services.AddApplication(builder.Configuration);
 
 builder.Services.AddTransient<GlobalExceptionHandlerMiddleware>();
 
-builder.Services.AddAuthentication();
+builder.Services.AddJwtBearerAuthentication(builder.Configuration);
 builder.Services.AddAuthorization();
 
 var app = builder.Build();

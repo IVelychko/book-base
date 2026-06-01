@@ -1,4 +1,6 @@
 using Bogus;
+using BookBase.Application.Services;
+using BookBase.Domain.Constants;
 using BookBase.Domain.Models.Entities;
 using BookBase.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -160,6 +162,60 @@ public static class SeedDatabase
         if (!context.BookGenres.Any())
         {
             await context.BookGenres.AddRangeAsync(bookGenres);
+            await context.SaveChangesAsync();
+        }
+
+        RoleEntity[] roles =
+        [
+            new RoleEntity
+            {
+                Id = Guid.NewGuid(),
+                Name = RoleNames.User
+            },
+            new RoleEntity
+            {
+                Id = Guid.NewGuid(),
+                Name = RoleNames.Admin
+            }
+        ];
+
+        if (!context.Roles.Any())
+        {
+            await context.Roles.AddRangeAsync(roles);
+            await context.SaveChangesAsync();
+        }
+
+        PasswordHasher passwordHasher = new();
+        Faker userFaker = new();
+        UserEntity[] users =
+        [
+            new UserEntity
+            {
+                Id = Guid.NewGuid(),
+                Username = "admin",
+                Email = userFaker.Person.Email,
+                PasswordHash = passwordHasher.Hash("password")
+            }
+        ];
+
+        if (!context.Users.Any())
+        {
+            await context.Users.AddRangeAsync(users);
+            await context.SaveChangesAsync();
+        }
+
+        UserRoleEntity[] userRoles =
+        [
+            new UserRoleEntity
+            {
+                UserId = users[0].Id,
+                RoleId = roles[1].Id
+            }
+        ];
+
+        if (!context.UserRoles.Any())
+        {
+            await context.UserRoles.AddRangeAsync(userRoles);
             await context.SaveChangesAsync();
         }
     }

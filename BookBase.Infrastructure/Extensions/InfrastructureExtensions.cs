@@ -40,6 +40,8 @@ public static class InfrastructureExtensions
         services.AddScoped<IPublisherRepository, PublisherRepository>();
         services.AddScoped<IBookTypeRepository, BookTypeRepository>();
         services.AddScoped<IBookCoverRepository, BookCoverRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IRoleRepository, RoleRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;

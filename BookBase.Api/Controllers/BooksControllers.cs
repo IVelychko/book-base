@@ -1,7 +1,9 @@
 using BookBase.Api.Mapping.Extensions;
 using BookBase.Api.Models.Requests;
 using BookBase.Domain.Abstractions.Services;
+using BookBase.Domain.Constants;
 using BookBase.Domain.Models.Commands.Books;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BookBase.Api.Controllers;
@@ -27,6 +29,7 @@ public class BooksController(IBookService bookService) : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = RoleNames.Admin)]
     public async Task<IActionResult> AddBook([FromBody] AddBookRequest request)
     {
         var command = request.ToCommand();
@@ -35,6 +38,7 @@ public class BooksController(IBookService bookService) : ControllerBase
     }
 
     [HttpPut]
+    [Authorize(Roles = RoleNames.Admin)]
     public async Task<IActionResult> UpdateBook([FromBody] UpdateBookRequest request)
     {
         var command = request.ToCommand();
@@ -43,6 +47,7 @@ public class BooksController(IBookService bookService) : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = RoleNames.Admin)]
     public async Task<IActionResult> DeleteBook([FromRoute] string id)
     {
         var command = new DeleteBookCommand(id);

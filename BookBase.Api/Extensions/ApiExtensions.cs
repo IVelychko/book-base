@@ -1,3 +1,9 @@
+using System.Text;
+using BookBase.Domain.Models.Configurations;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
+
 namespace BookBase.Api.Extensions;
 
 public static class ApiExtensions
@@ -14,6 +20,37 @@ public static class ApiExtensions
                     .AllowAnyMethod()
                     .AllowCredentials();
             });
+        });
+
+        return services;
+    }
+
+    public static IServiceCollection AddJwtBearerAuthentication(this IServiceCollection services, IConfiguration configuration)
+    {
+        JwtConfiguration jwtConfiguration = new();
+        configuration.GetSection(nameof(JwtConfiguration)).Bind(jwtConfiguration);
+        var encodedKey = Encoding.UTF8.GetBytes(jwtConfiguration.Key);
+        SymmetricSecurityKey symmetricSecurityKey = new(encodedKey);
+        TokenValidationParameters tokenValidationParameters = new()
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtConfiguration.Issuer,
+            ValidAudience = jwtConfiguration.Audience,
+            IssuerSigningKey = symmetricSecurityKey,
+            ClockSkew = TimeSpan.Zero,
+        };
+
+        services.AddAuthentication(opts =>
+        {
+            opts.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            opts.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            opts.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+        }).AddJwtBearer(opts =>
+        {
+            opts.TokenValidationParameters = tokenValidationParameters;
         });
 
         return services;

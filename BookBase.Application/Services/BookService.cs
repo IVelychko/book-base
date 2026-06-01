@@ -21,15 +21,17 @@ public class BookService(
     {
         Ensure.ArgumentNotNull(command);
         await _bookServiceValidator.ValidateAddBookCommandAsync(command);
+
         var bookEntity = command.ToEntity();
-        await _bookRepository.AddBookAsync(bookEntity);
-        return bookEntity.Id;
+        var bookId = await _bookRepository.AddBookAsync(bookEntity);
+        return bookId;
     }
 
     public async Task DeleteBookAsync(DeleteBookCommand command)
     {
         Ensure.ArgumentNotNull(command);
         await _bookServiceValidator.ValidateDeleteBookCommandAsync(command);
+
         await _bookRepository.DeleteBookAsync(Guid.Parse(command.Id));
     }
 
@@ -49,7 +51,7 @@ public class BookService(
     public async Task<Book> GetBookByIdAsync(Guid id)
     {
         var bookEntity = await _bookRepository.GetBookByIdAsync(id);
-        bookEntity = Ensure.EntityExists(bookEntity, "Book with the specified ID does not exist.");
+        Ensure.EntityExists(bookEntity, "Book with the specified ID does not exist.");
         return bookEntity.ToDto();
     }
 
@@ -57,8 +59,9 @@ public class BookService(
     {
         Ensure.ArgumentNotNull(command);
         await _bookServiceValidator.ValidateUpdateBookCommandAsync(command);
+
         var existingBook = await _bookRepository.GetBookByIdAsync(Guid.Parse(command.Id));
-        existingBook = Ensure.EntityExists(existingBook, "Book with the specified ID does not exist.");
+        Ensure.EntityExists(existingBook, "Book with the specified ID does not exist.");
         var bookEntity = command.ToEntity(existingBook.PublicationDate);
         await _bookRepository.UpdateBookAsync(bookEntity);
     }

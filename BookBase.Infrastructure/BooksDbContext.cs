@@ -19,6 +19,12 @@ public class BooksDbContext(DbContextOptions<BooksDbContext> options) : DbContex
 
     public DbSet<BookGenreEntity> BookGenres => Set<BookGenreEntity>();
 
+    public DbSet<UserEntity> Users => Set<UserEntity>();
+
+    public DbSet<RoleEntity> Roles => Set<RoleEntity>();
+
+    public DbSet<UserRoleEntity> UserRoles => Set<UserRoleEntity>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

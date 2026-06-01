@@ -4,7 +4,7 @@ using BookBase.Domain.Exceptions;
 
 namespace BookBase.Api.Middlewares;
 
-public class GlobalExceptionHandlerMiddleware : IMiddleware
+public class GlobalExceptionHandlerMiddleware(ILogger<GlobalExceptionHandlerMiddleware> logger) : IMiddleware
 {
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
@@ -18,7 +18,7 @@ public class GlobalExceptionHandlerMiddleware : IMiddleware
         }
     }
 
-    private static async Task HandleException(HttpContext context, Exception exception)
+    private async Task HandleException(HttpContext context, Exception exception)
     {
         switch (exception)
         {
@@ -27,6 +27,9 @@ public class GlobalExceptionHandlerMiddleware : IMiddleware
                 break;
             case NotFoundException notFoundException:
                 await HandleNotFoundExceptionAsync(context, notFoundException);
+                break;
+            case AuthException authException:
+                await HandleAuthExceptionAsync(context, authException);
                 break;
             default:
                 await HandleDefaultExceptionAsync(context, exception);
@@ -59,8 +62,21 @@ public class GlobalExceptionHandlerMiddleware : IMiddleware
         await context.Response.WriteAsJsonAsync(problemDetailsResponse);
     }
 
-    private static async Task HandleDefaultExceptionAsync(HttpContext context, Exception exception)
+    private static async Task HandleAuthExceptionAsync(HttpContext context, AuthException authException)
     {
+        const int statusCode = (int)HttpStatusCode.Unauthorized;
+        context.Response.StatusCode = statusCode;
+        var problemDetailsResponse = new ProblemDetailsResponse
+        {
+            Title = authException.Message,
+            StatusCode = statusCode,
+        };
+        await context.Response.WriteAsJsonAsync(problemDetailsResponse);
+    }
+
+    private async Task HandleDefaultExceptionAsync(HttpContext context, Exception exception)
+    {
+        logger.LogError(exception, "Unhandled exception occured");
         const int statusCode = (int)HttpStatusCode.InternalServerError;
         context.Response.StatusCode = statusCode;
         var problemDetailsResponse = new ProblemDetailsResponse

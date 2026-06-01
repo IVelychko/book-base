@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BookBase.Infrastructure.Migrations
 {
     [DbContext(typeof(BooksDbContext))]
-    [Migration("20260524220958_Initial")]
+    [Migration("20260601000904_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -216,6 +216,82 @@ namespace BookBase.Infrastructure.Migrations
                     b.ToTable("publishers", "bookbase");
                 });
 
+            modelBuilder.Entity("BookBase.Domain.Models.Entities.RoleEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id")
+                        .HasName("pk_roles");
+
+                    b.HasIndex("Name")
+                        .IsUnique()
+                        .HasDatabaseName("ix_roles_name");
+
+                    b.ToTable("roles", "bookbase");
+                });
+
+            modelBuilder.Entity("BookBase.Domain.Models.Entities.UserEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid")
+                        .HasColumnName("id");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("text")
+                        .HasColumnName("email");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("password_hash");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("username");
+
+                    b.HasKey("Id")
+                        .HasName("pk_users");
+
+                    b.HasIndex("Email")
+                        .IsUnique()
+                        .HasDatabaseName("ix_users_email");
+
+                    b.HasIndex("Username")
+                        .IsUnique()
+                        .HasDatabaseName("ix_users_username");
+
+                    b.ToTable("users", "bookbase");
+                });
+
+            modelBuilder.Entity("BookBase.Domain.Models.Entities.UserRoleEntity", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("user_id");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("role_id");
+
+                    b.HasKey("UserId", "RoleId")
+                        .HasName("pk_user_roles");
+
+                    b.HasIndex("RoleId")
+                        .HasDatabaseName("ix_user_roles_role_id");
+
+                    b.ToTable("user_roles", "bookbase");
+                });
+
             modelBuilder.Entity("BookBase.Domain.Models.Entities.BookEntity", b =>
                 {
                     b.HasOne("BookBase.Domain.Models.Entities.AuthorEntity", "Author")
@@ -276,6 +352,27 @@ namespace BookBase.Infrastructure.Migrations
                     b.Navigation("Genre");
                 });
 
+            modelBuilder.Entity("BookBase.Domain.Models.Entities.UserRoleEntity", b =>
+                {
+                    b.HasOne("BookBase.Domain.Models.Entities.RoleEntity", "Role")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_roles_roles_role_id");
+
+                    b.HasOne("BookBase.Domain.Models.Entities.UserEntity", "User")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_user_roles_users_user_id");
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("BookBase.Domain.Models.Entities.AuthorEntity", b =>
                 {
                     b.Navigation("Books");
@@ -304,6 +401,16 @@ namespace BookBase.Infrastructure.Migrations
             modelBuilder.Entity("BookBase.Domain.Models.Entities.PublisherEntity", b =>
                 {
                     b.Navigation("Books");
+                });
+
+            modelBuilder.Entity("BookBase.Domain.Models.Entities.RoleEntity", b =>
+                {
+                    b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("BookBase.Domain.Models.Entities.UserEntity", b =>
+                {
+                    b.Navigation("UserRoles");
                 });
 #pragma warning restore 612, 618
         }

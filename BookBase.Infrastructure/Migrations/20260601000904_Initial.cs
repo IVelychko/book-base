@@ -82,6 +82,34 @@ namespace BookBase.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "roles",
+                schema: "bookbase",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    name = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_roles", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "users",
+                schema: "bookbase",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uuid", nullable: false),
+                    username = table.Column<string>(type: "text", nullable: false),
+                    email = table.Column<string>(type: "text", nullable: true),
+                    password_hash = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_users", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "books",
                 schema: "bookbase",
                 columns: table => new
@@ -123,6 +151,33 @@ namespace BookBase.Infrastructure.Migrations
                         column: x => x.publisher_id,
                         principalSchema: "bookbase",
                         principalTable: "publishers",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "user_roles",
+                schema: "bookbase",
+                columns: table => new
+                {
+                    user_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    role_id = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("pk_user_roles", x => new { x.user_id, x.role_id });
+                    table.ForeignKey(
+                        name: "fk_user_roles_roles_role_id",
+                        column: x => x.role_id,
+                        principalSchema: "bookbase",
+                        principalTable: "roles",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "fk_user_roles_users_user_id",
+                        column: x => x.user_id,
+                        principalSchema: "bookbase",
+                        principalTable: "users",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -225,6 +280,33 @@ namespace BookBase.Infrastructure.Migrations
                 table: "publishers",
                 column: "name",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_roles_name",
+                schema: "bookbase",
+                table: "roles",
+                column: "name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_user_roles_role_id",
+                schema: "bookbase",
+                table: "user_roles",
+                column: "role_id");
+
+            migrationBuilder.CreateIndex(
+                name: "ix_users_email",
+                schema: "bookbase",
+                table: "users",
+                column: "email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "ix_users_username",
+                schema: "bookbase",
+                table: "users",
+                column: "username",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -235,11 +317,23 @@ namespace BookBase.Infrastructure.Migrations
                 schema: "bookbase");
 
             migrationBuilder.DropTable(
+                name: "user_roles",
+                schema: "bookbase");
+
+            migrationBuilder.DropTable(
                 name: "books",
                 schema: "bookbase");
 
             migrationBuilder.DropTable(
                 name: "genres",
+                schema: "bookbase");
+
+            migrationBuilder.DropTable(
+                name: "roles",
+                schema: "bookbase");
+
+            migrationBuilder.DropTable(
+                name: "users",
                 schema: "bookbase");
 
             migrationBuilder.DropTable(
