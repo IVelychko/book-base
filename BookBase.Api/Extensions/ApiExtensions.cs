@@ -2,7 +2,6 @@ using System.Text;
 using BookBase.Domain.Models.Configurations;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
 
 namespace BookBase.Api.Extensions;
 

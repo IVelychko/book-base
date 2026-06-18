@@ -5,7 +5,7 @@ namespace BookBase.Domain.Abstractions.Services;
 
 public interface IAuthService
 {
-    Task<AuthorizedUser> SignInUserAsync(SignInUserCommand command);
+    Task<AuthorizedUserDto> SignInUserAsync(SignInUserCommand command);
 
-    Task<AuthorizedUser> SignUpUserAsync(SignUpUserCommand command);
+    Task<AuthorizedUserDto> SignUpUserAsync(SignUpUserCommand command);
 }

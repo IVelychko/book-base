@@ -40,11 +40,11 @@ public class UserService(
         await _userRepository.DeleteUserAsync(Guid.Parse(command.Id));
     }
 
-    public async Task<PagedResult<User>> GetAllUsersPaginatedAsync(int pageNumber, int pageSize)
+    public async Task<PagedResult<UserDto>> GetAllUsersPaginatedAsync(int pageNumber, int pageSize)
     {
         var userEntities = await _userRepository.GetAllUsersPaginatedAsync(pageNumber, pageSize);
         var totalUsersCount = await _userRepository.GetTotalUsersCountAsync();
-        return new PagedResult<User>
+        return new PagedResult<UserDto>
         {
             Items = userEntities.Select(u => u.ToDto()).ToList(),
             PageNumber = pageNumber,
@@ -53,7 +53,7 @@ public class UserService(
         };
     }
 
-    public async Task<User> GetUserByIdAsync(Guid id)
+    public async Task<UserDto> GetUserByIdAsync(Guid id)
     {
         var userEntity = await _userRepository.GetUserByIdAsync(id);
         Ensure.EntityExists(userEntity, "User with the specified ID does not exist.");

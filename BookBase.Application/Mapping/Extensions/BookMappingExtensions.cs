@@ -34,9 +34,9 @@ public static class BookMappingExtensions
         };
     }
 
-    public static Book ToDto(this BookEntity entity)
+    public static BookDto ToDto(this BookEntity entity)
     {
-        return new Book
+        return new BookDto
         {
             Id = entity.Id,
             Title = entity.Title,

@@ -35,11 +35,11 @@ public class BookService(
         await _bookRepository.DeleteBookAsync(Guid.Parse(command.Id));
     }
 
-    public async Task<PagedResult<Book>> GetAllBooksPaginatedAsync(int pageNumber, int pageSize)
+    public async Task<PagedResult<BookDto>> GetAllBooksPaginatedAsync(int pageNumber, int pageSize)
     {
         var bookEntities = await _bookRepository.GetAllBooksPaginatedAsync(pageNumber, pageSize);
         var totalBooksCount = await _bookRepository.GetTotalBooksCountAsync();
-        return new PagedResult<Book>
+        return new PagedResult<BookDto>
         {
             Items = bookEntities.Select(b => b.ToDto()).ToList(),
             PageNumber = pageNumber,
@@ -48,7 +48,7 @@ public class BookService(
         };
     }
 
-    public async Task<Book> GetBookByIdAsync(Guid id)
+    public async Task<BookDto> GetBookByIdAsync(Guid id)
     {
         var bookEntity = await _bookRepository.GetBookByIdAsync(id);
         Ensure.EntityExists(bookEntity, "Book with the specified ID does not exist.");

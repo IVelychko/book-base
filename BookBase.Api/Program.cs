@@ -9,8 +9,6 @@ const string corsPolicyName = "BaseCorsPolicy";
 
 builder.Configuration.AddEnvironmentVariables();
 
-// Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
 builder.Services.AddCorsPolicy(corsPolicyName, builder.Configuration);
@@ -31,7 +29,6 @@ app.UseCors(corsPolicyName);
 
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();

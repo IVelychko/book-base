@@ -1,6 +1,6 @@
 namespace BookBase.Domain.Models.DTOs;
 
-public class Author
+public class AuthorDto
 {
     public Guid Id { get; set; }
 

@@ -5,9 +5,9 @@ namespace BookBase.Application.Mapping.Extensions;
 
 public static class PublisherMappingExtensions
 {
-    public static Publisher ToDto(this PublisherEntity entity)
+    public static PublisherDto ToDto(this PublisherEntity entity)
     {
-        return new Publisher
+        return new PublisherDto
         {
             Id = entity.Id,
             Name = entity.Name

@@ -19,9 +19,9 @@ public static class UserMappingExtensions
         };
     }
 
-    public static User ToDto(this UserEntity entity)
+    public static UserDto ToDto(this UserEntity entity)
     {
-        return new User
+        return new UserDto
         {
             Id = entity.Id,
             Username = entity.Username,

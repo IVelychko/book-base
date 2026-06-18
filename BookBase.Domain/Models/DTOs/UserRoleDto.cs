@@ -1,6 +1,6 @@
 namespace BookBase.Domain.Models.DTOs;
 
-public class UserRole
+public class UserRoleDto
 {
     public Guid RoleId { get; set; }
 

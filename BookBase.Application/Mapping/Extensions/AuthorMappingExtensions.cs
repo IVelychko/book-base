@@ -5,9 +5,9 @@ namespace BookBase.Application.Mapping.Extensions;
 
 public static class AuthorMappingExtensions
 {
-    public static Author ToDto(this AuthorEntity entity)
+    public static AuthorDto ToDto(this AuthorEntity entity)
     {
-        return new Author
+        return new AuthorDto
         {
             Id = entity.Id,
             FirstName = entity.FirstName,

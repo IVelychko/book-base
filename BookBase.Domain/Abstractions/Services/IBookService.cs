@@ -6,9 +6,9 @@ namespace BookBase.Domain.Abstractions.Services;
 
 public interface IBookService
 {
-    Task<PagedResult<Book>> GetAllBooksPaginatedAsync(int pageNumber, int pageSize);
+    Task<PagedResult<BookDto>> GetAllBooksPaginatedAsync(int pageNumber, int pageSize);
 
-    Task<Book> GetBookByIdAsync(Guid id);
+    Task<BookDto> GetBookByIdAsync(Guid id);
 
     Task<Guid> AddBookAsync(AddBookCommand command);
 

@@ -1,6 +1,6 @@
 namespace BookBase.Domain.Models.DTOs;
 
-public class User
+public class UserDto
 {
     public Guid Id { get; set; }
 
@@ -8,5 +8,5 @@ public class User
 
     public string? Email { get; set; }
 
-    public IEnumerable<UserRole> UserRoles { get; set; } = [];
+    public IEnumerable<UserRoleDto> UserRoles { get; set; } = [];
 }

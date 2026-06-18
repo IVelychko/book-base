@@ -6,9 +6,9 @@ namespace BookBase.Domain.Abstractions.Services;
 
 public interface IUserService
 {
-    Task<PagedResult<User>> GetAllUsersPaginatedAsync(int pageNumber, int pageSize);
+    Task<PagedResult<UserDto>> GetAllUsersPaginatedAsync(int pageNumber, int pageSize);
 
-    Task<User> GetUserByIdAsync(Guid id);
+    Task<UserDto> GetUserByIdAsync(Guid id);
 
     Task<Guid> AddUserAsync(AddUserCommand command);
 

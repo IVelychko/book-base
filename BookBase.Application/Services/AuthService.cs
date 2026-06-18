@@ -29,7 +29,7 @@ public class AuthService(
 
     private readonly IAuthServiceValidator _authServiceValidator = authServiceValidator;
 
-    public async Task<AuthorizedUser> SignInUserAsync(SignInUserCommand command)
+    public async Task<AuthorizedUserDto> SignInUserAsync(SignInUserCommand command)
     {
         Ensure.ArgumentNotNull(command);
         await _authServiceValidator.ValidateSignInUserCommandAsync(command);
@@ -40,7 +40,7 @@ public class AuthService(
         return CreateAuthorizedUser(userEntity);
     }
 
-    public async Task<AuthorizedUser> SignUpUserAsync(SignUpUserCommand command)
+    public async Task<AuthorizedUserDto> SignUpUserAsync(SignUpUserCommand command)
     {
         Ensure.ArgumentNotNull(command);
         await _authServiceValidator.ValidateSignUpUserCommandAsync(command);
@@ -76,7 +76,7 @@ public class AuthService(
         return roleEntity;
     }
 
-    private AuthorizedUser CreateAuthorizedUser(UserEntity userEntity)
+    private AuthorizedUserDto CreateAuthorizedUser(UserEntity userEntity)
     {
         var user = userEntity.ToDto();
         var accessToken = _jwtService.CreateSerializedToken(user);

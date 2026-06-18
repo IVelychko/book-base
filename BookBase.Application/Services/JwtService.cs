@@ -23,7 +23,7 @@ public class JwtService(IOptions<JwtConfiguration> jwtConfiguration) : IJwtServi
         return (JwtSecurityToken)validatedToken;
     }
 
-    public string CreateSerializedToken(User user)
+    public string CreateSerializedToken(UserDto user)
     {
         Ensure.ArgumentNotNull(user);
         var token = CreateToken(user);
@@ -31,7 +31,7 @@ public class JwtService(IOptions<JwtConfiguration> jwtConfiguration) : IJwtServi
         return tokenHandler.WriteToken(token);
     }
 
-    private JwtSecurityToken CreateToken(User user)
+    private JwtSecurityToken CreateToken(UserDto user)
     {
         var claims = GetClaims(user);
         SecurityTokenDescriptor tokenDescriptor = new()
@@ -66,7 +66,7 @@ public class JwtService(IOptions<JwtConfiguration> jwtConfiguration) : IJwtServi
         return new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
     }
 
-    private List<Claim> GetClaims(User user)
+    private List<Claim> GetClaims(UserDto user)
     {
         var userRoleClaims = user.UserRoles.Select(x => new Claim(ClaimTypes.Role, x.Role)).ToList();
         List<Claim> claims = [

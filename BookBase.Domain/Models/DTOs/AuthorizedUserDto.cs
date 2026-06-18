@@ -1,6 +1,6 @@
 namespace BookBase.Domain.Models.DTOs;
 
-public class AuthorizedUser
+public class AuthorizedUserDto
 {
     public Guid Id { get; set; }
 
@@ -10,5 +10,5 @@ public class AuthorizedUser
 
     public string AccessToken { get; set; } = string.Empty;
 
-    public IEnumerable<UserRole> UserRoles { get; set; } = [];
+    public IEnumerable<UserRoleDto> UserRoles { get; set; } = [];
 }

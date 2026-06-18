@@ -6,7 +6,7 @@ namespace BookBase.Domain.Abstractions.Services;
 
 public interface IJwtService
 {
-    string CreateSerializedToken(User user);
+    string CreateSerializedToken(UserDto user);
 
     JwtSecurityToken ValidateToken(string token, TokenValidationParameters tokenValidationParameters);
 }

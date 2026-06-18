@@ -25,9 +25,9 @@ public static class AuthMappingExtensions
         };
     }
 
-    public static AuthorizedUser ToAuthorizedUserDto(this User user, string accessToken)
+    public static AuthorizedUserDto ToAuthorizedUserDto(this UserDto user, string accessToken)
     {
-        return new AuthorizedUser
+        return new AuthorizedUserDto
         {
             Id = user.Id,
             Username = user.Username,
