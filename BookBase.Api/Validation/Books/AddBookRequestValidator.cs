@@ -1,19 +1,14 @@
-using BookBase.Domain.Models.Commands.Books;
+using BookBase.Api.Models.Requests;
+using FastEndpoints;
 using FluentValidation;
 
-namespace BookBase.Application.Validation.Books;
+namespace BookBase.Api.Validation.Books;
 
-public class UpdateBookCommandValidator : AbstractValidator<UpdateBookCommand>
+public class AddBookRequestValidator : Validator<AddBookRequest>
 {
-    public UpdateBookCommandValidator()
+    public AddBookRequestValidator()
     {
         RuleLevelCascadeMode = CascadeMode.Stop;
-
-        RuleFor(x => x.Id)
-            .NotEmpty()
-            .WithMessage("Id is required.")
-            .Must(IsValidGuid)
-            .WithMessage("Id must be a valid GUID.");
 
         RuleFor(x => x.Title)
             .NotEmpty()

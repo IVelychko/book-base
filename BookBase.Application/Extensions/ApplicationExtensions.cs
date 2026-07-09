@@ -1,15 +1,10 @@
 using BookBase.Application.Services;
-using BookBase.Application.Validation.Auth;
 using BookBase.Application.Validation.Auth.Services;
-using BookBase.Application.Validation.Books;
 using BookBase.Application.Validation.Books.Services;
-using BookBase.Application.Validation.Users;
 using BookBase.Application.Validation.Users.Services;
 using BookBase.Domain.Abstractions.Services;
-using BookBase.Domain.Abstractions.Validators;
 using BookBase.Domain.Abstractions.Validators.Services;
 using BookBase.Domain.Models.Configurations;
-using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,14 +14,7 @@ public static class ApplicationExtensions
 {
     public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
     {
-        ValidatorOptions.Global.LanguageManager.Enabled = false;
-        services.AddValidatorsFromAssembly(typeof(ApplicationExtensions).Assembly);
-
         AddJwtConfiguration(services, configuration);
-
-        services.AddScoped<IBookValidator, BookValidator>();
-        services.AddScoped<IUserValidator, UserValidator>();
-        services.AddScoped<IAuthValidator, AuthValidator>();
 
         services.AddScoped<IBookServiceValidator, BookServiceValidator>();
         services.AddScoped<IUserServiceValidator, UserServiceValidator>();

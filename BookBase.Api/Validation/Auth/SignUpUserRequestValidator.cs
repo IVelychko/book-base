@@ -1,11 +1,12 @@
-using BookBase.Domain.Models.Commands.Auth;
+using BookBase.Api.Models.Requests;
+using FastEndpoints;
 using FluentValidation;
 
-namespace BookBase.Application.Validation.Auth;
+namespace BookBase.Api.Validation.Auth;
 
-public class SignUpUserCommandValidator : AbstractValidator<SignUpUserCommand>
+public class SignUpUserRequestValidator : Validator<SignUpUserRequest>
 {
-    public SignUpUserCommandValidator()
+    public SignUpUserRequestValidator()
     {
         RuleLevelCascadeMode = CascadeMode.Stop;
 

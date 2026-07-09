@@ -1,31 +1,21 @@
-using BookBase.Application.Extensions;
 using BookBase.Domain.Abstractions.Repositories;
-using BookBase.Domain.Abstractions.Validators;
 using BookBase.Domain.Abstractions.Validators.Services;
 using BookBase.Domain.Exceptions;
 using BookBase.Domain.Models.Commands.Users;
-using BookBase.Domain.Shared;
 
 namespace BookBase.Application.Validation.Users.Services;
 
 public class UserServiceValidator(
-    IUserValidator userValidator,
     IUserRepository userRepository,
     IRoleRepository roleRepository
 ) : IUserServiceValidator
 {
-    private readonly IUserValidator _userValidator = userValidator;
-
     private readonly IUserRepository _userRepository = userRepository;
 
     private readonly IRoleRepository _roleRepository = roleRepository;
 
     public async Task ValidateAddUserCommandAsync(AddUserCommand command)
     {
-        Ensure.ArgumentNotNull(command);
-        var validationResult = _userValidator.ValidateAddUserCommand(command);
-        validationResult.ThrowIfValidationFailed();
-
         var validationErrors = new Dictionary<string, string[]>();
         await CheckUserNotExistsByUsernameAsync(command.Username, validationErrors);
         await CheckUserNotExistsByEmailAsync(command.Email, validationErrors);
@@ -34,14 +24,11 @@ public class UserServiceValidator(
             await CheckRoleExistsAsync(Guid.Parse(roleId), validationErrors);
         }
 
-        ThrowIfErrorsExist(validationErrors);
+        ValidationHelper.ThrowIfErrorsExist(validationErrors);
     }
 
     public async Task ValidateDeleteUserCommandAsync(DeleteUserCommand command)
     {
-        Ensure.ArgumentNotNull(command);
-        var validationResult = _userValidator.ValidateDeleteUserCommand(command);
-        validationResult.ThrowIfValidationFailed();
         await CheckUserExistsByIdAsync(Guid.Parse(command.Id));
     }
 
@@ -54,23 +41,23 @@ public class UserServiceValidator(
         }
     }
 
-    private async Task CheckUserNotExistsByUsernameAsync(string username, Dictionary<string, string[]> validationErrors, Guid? excludeBookId = null)
+    private async Task CheckUserNotExistsByUsernameAsync(string username, Dictionary<string, string[]> validationErrors, Guid? excludeUserId = null)
     {
-        var exists = await _userRepository.UserExistsByUsernameAsync(username, excludeBookId);
+        var exists = await _userRepository.UserExistsByUsernameAsync(username, excludeUserId);
         if (exists)
         {
             validationErrors.Add(nameof(username), ["User with the specified username already exists."]);
         }
     }
 
-    private async Task CheckUserNotExistsByEmailAsync(string? email, Dictionary<string, string[]> validationErrors, Guid? excludeBookId = null)
+    private async Task CheckUserNotExistsByEmailAsync(string? email, Dictionary<string, string[]> validationErrors, Guid? excludeUserId = null)
     {
         if (email is null)
         {
             return;
         }
 
-        var exists = await _userRepository.UserExistsByEmailAsync(email, excludeBookId);
+        var exists = await _userRepository.UserExistsByEmailAsync(email, excludeUserId);
         if (exists)
         {
             validationErrors.Add(nameof(email), ["User with the specified email already exists."]);
@@ -92,14 +79,6 @@ public class UserServiceValidator(
             }
 
             validationErrors.Add(roleIdsKey, [$"Role with ID {roleId} does not exist."]);
-        }
-    }
-
-    private static void ThrowIfErrorsExist(Dictionary<string, string[]> validationErrors)
-    {
-        if (validationErrors.Count > 0)
-        {
-            throw new ValidationException(validationErrors);
         }
     }
 }

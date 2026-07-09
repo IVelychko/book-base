@@ -1,22 +1,17 @@
-using BookBase.Application.Extensions;
 using BookBase.Domain.Abstractions.Repositories;
-using BookBase.Domain.Abstractions.Validators;
 using BookBase.Domain.Abstractions.Validators.Services;
 using BookBase.Domain.Exceptions;
 using BookBase.Domain.Models.Commands.Books;
-using BookBase.Domain.Shared;
 
 namespace BookBase.Application.Validation.Books.Services;
 
 public class BookServiceValidator(
-    IBookValidator bookValidator,
     IBookRepository bookRepository,
     IAuthorRepository authorRepository,
     IPublisherRepository publisherRepository,
     IBookTypeRepository bookTypeRepository,
     IBookCoverRepository bookCoverRepository) : IBookServiceValidator
 {
-    private readonly IBookValidator _bookValidator = bookValidator;
     private readonly IBookRepository _bookRepository = bookRepository;
     private readonly IAuthorRepository _authorRepository = authorRepository;
     private readonly IPublisherRepository _publisherRepository = publisherRepository;
@@ -25,24 +20,17 @@ public class BookServiceValidator(
 
     public async Task ValidateAddBookCommandAsync(AddBookCommand command)
     {
-        Ensure.ArgumentNotNull(command);
-        var validationResult = _bookValidator.ValidateAddBookCommand(command);
-        validationResult.ThrowIfValidationFailed();
-
         var validationErrors = new Dictionary<string, string[]>();
         await CheckBookNotExistsByTitleAndAuthorIdAsync(command.Title, Guid.Parse(command.AuthorId), validationErrors);
         await CheckAuthorExistsAsync(Guid.Parse(command.AuthorId), validationErrors);
         await CheckPublisherExistsAsync(Guid.Parse(command.PublisherId), validationErrors);
         await CheckBookTypeExistsAsync(Guid.Parse(command.BookTypeId), validationErrors);
         await CheckBookCoverExistsAsync(Guid.Parse(command.BookCoverId), validationErrors);
-        ThrowIfErrorsExist(validationErrors);
+        ValidationHelper.ThrowIfErrorsExist(validationErrors);
     }
 
     public async Task ValidateUpdateBookCommandAsync(UpdateBookCommand command)
     {
-        Ensure.ArgumentNotNull(command);
-        var validationResult = _bookValidator.ValidateUpdateBookCommand(command);
-        validationResult.ThrowIfValidationFailed();
         await CheckBookExistsByIdAsync(Guid.Parse(command.Id));
 
         var validationErrors = new Dictionary<string, string[]>();
@@ -51,14 +39,11 @@ public class BookServiceValidator(
         await CheckPublisherExistsAsync(Guid.Parse(command.PublisherId), validationErrors);
         await CheckBookTypeExistsAsync(Guid.Parse(command.BookTypeId), validationErrors);
         await CheckBookCoverExistsAsync(Guid.Parse(command.BookCoverId), validationErrors);
-        ThrowIfErrorsExist(validationErrors);
+        ValidationHelper.ThrowIfErrorsExist(validationErrors);
     }
 
     public async Task ValidateDeleteBookCommandAsync(DeleteBookCommand command)
     {
-        Ensure.ArgumentNotNull(command);
-        var validationResult = _bookValidator.ValidateDeleteBookCommand(command);
-        validationResult.ThrowIfValidationFailed();
         await CheckBookExistsByIdAsync(Guid.Parse(command.Id));
     }
 
@@ -113,14 +98,6 @@ public class BookServiceValidator(
         if (!exists)
         {
             validationErrors.Add(nameof(bookCoverId), ["Book cover with the specified ID does not exist."]);
-        }
-    }
-
-    private static void ThrowIfErrorsExist(Dictionary<string, string[]> validationErrors)
-    {
-        if (validationErrors.Count > 0)
-        {
-            throw new ValidationException(validationErrors);
         }
     }
 }

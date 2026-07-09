@@ -1,11 +1,12 @@
-using BookBase.Domain.Models.Commands.Books;
+using BookBase.Api.Models.Requests;
+using FastEndpoints;
 using FluentValidation;
 
-namespace BookBase.Application.Validation.Books;
+namespace BookBase.Api.Validation.Books;
 
-public class DeleteBookCommandValidator : AbstractValidator<DeleteBookCommand>
+public class DeleteBookRequestValidator : Validator<DeleteBookRequest>
 {
-    public DeleteBookCommandValidator()
+    public DeleteBookRequestValidator()
     {
         RuleLevelCascadeMode = CascadeMode.Stop;
 
